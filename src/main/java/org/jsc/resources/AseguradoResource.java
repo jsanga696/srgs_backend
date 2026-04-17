@@ -19,6 +19,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -32,16 +33,22 @@ public class AseguradoResource {
     AseguradoService services;
 
     @GET
-    @Path("/{page}/{size}")
-    public List<Asegurado> listar(@PathParam("page") int page,
-                          @PathParam("size") int size) {
-        return services.listar(page, size);
+    public List<Asegurado> listar(@QueryParam("page") int page,
+                        @QueryParam("size") int size,
+                        @QueryParam("identificacion") String identificacion) {
+        return services.listar(page, size, identificacion);
     }
 
     @GET
     @Path("/{id}")
     public Asegurado obtener(@PathParam("id") UUID id) {
         return services.buscarPorId(id);
+    }
+
+    @GET
+    @Path("/{identificacion}")
+    public Asegurado obtenerPorIdentificacion(@PathParam("identificacion") String identificacion) {
+        return services.buscarPorIdentificacion(identificacion);
     }
 
     @POST

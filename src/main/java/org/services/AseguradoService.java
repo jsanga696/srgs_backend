@@ -35,15 +35,26 @@ public class AseguradoService {
         return asegurado;
     }
 
-    public List<Asegurado> listar(int page, int size) {
-        return repository.listar(page, size);
+    public Asegurado buscarPorIdentificacion(String identificacion) {
+
+        Asegurado asegurado = repository.buscarPorIdentificacionAsegurado(identificacion);
+
+        if (asegurado == null) {
+            throw new RuntimeException("Asegurado no encontrado");
+        }
+
+        return asegurado;
     }
 
-    /*public Asegurado crear(Asegurado asegurado) {
-        return repository.guardar(asegurado);
-    }*/
+    public List<Asegurado> listar(int page, int size, String identificacion) {
+        return repository.listar(page, size, identificacion);
+    }
 
-    @Transactional
+    public Asegurado crear(Asegurado asegurado) {
+        return repository.guardar(asegurado);
+    }
+
+    /*@Transactional
     public Asegurado crear(Asegurado asegurado) {
 
         if (asegurado.empresa != null && asegurado.empresa.id != null) {
@@ -62,6 +73,6 @@ public class AseguradoService {
         repository.guardar(asegurado);
 
         return asegurado;
-    }
+    }*/
 
 }
