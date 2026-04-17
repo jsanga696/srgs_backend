@@ -1,32 +1,36 @@
 package org.jsc.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Usuario {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    public String username;
+    private String username;
 
-    public String password;
+    private String password;
 
-    public String rol;
+    private String rol;
 
-    public String nombres;
+    private String nombres;
 
-    public String identificacion;
+    private String identificacion;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean activo;
+    private Boolean activo;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    public Empresa empresa;
+    private Empresa empresa;
 
     public Usuario() {
     }

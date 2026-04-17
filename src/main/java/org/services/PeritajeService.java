@@ -72,10 +72,10 @@ public class PeritajeService {
         if (peritaje.vehiculo != null && peritaje.vehiculo.id != null) {
             vehiculo = vehiculoService.buscarPorId(peritaje.vehiculo.id);
 
-            resp.chasis_vehiculo = vehiculo.chasis;
-            resp.marca_vehiculo = vehiculo.marca;
-            resp.modelo_vehiculo = vehiculo.modelo;
-            resp.anio_vehiculo = vehiculo.anio_fabricacion;
+            resp.chasis_vehiculo = vehiculo.getChasis();
+            resp.marca_vehiculo = vehiculo.getMarca();
+            resp.modelo_vehiculo = vehiculo.getModelo();
+            resp.anio_vehiculo = vehiculo.getAnio_fabricacion();
         }
 
         if (peritaje.perito != null && peritaje.perito.id != null) {

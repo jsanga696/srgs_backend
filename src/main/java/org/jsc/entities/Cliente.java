@@ -7,31 +7,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Cliente {
     
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    public String nombres;
+    private String nombres;
 
-    public String identificacion;
+    private String identificacion;
 
-    public String direccion;
-
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean esPersonaNatural;
+    private String direccion;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean activo;
+    private Boolean esPersonaNatural;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private Boolean activo;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    public Empresa empresa;
+    private Empresa empresa;
 
     public Cliente() {
     }

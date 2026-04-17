@@ -11,40 +11,44 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Peritaje {
     
     @Id
     @Column(nullable = false)
     @GeneratedValue
-    public UUID id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "id_siniestro")
-    public Siniestro siniestro;
+    private Siniestro siniestro;
 
     @ManyToOne
     @JoinColumn(name = "id_asegurado")
-    public Asegurado asegurado;
+    private Asegurado asegurado;
 
     @ManyToOne
     @JoinColumn(name = "id_vehiculo")
-    public Vehiculo vehiculo;
+    private Vehiculo vehiculo;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
-    public Usuario perito;
+    private Usuario perito;
 
-    public String codigo;
+    private String codigo;
 
-    public String ruta_archivos;
+    private String ruta_archivos;
 
     @CreationTimestamp
     @Column(nullable = false)
-    public LocalDateTime fecha;
+    private LocalDateTime fecha;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    public Boolean procede;
+    private Boolean procede;
 
 }

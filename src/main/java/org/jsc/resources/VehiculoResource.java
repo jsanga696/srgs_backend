@@ -1,7 +1,12 @@
 package org.jsc.resources;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.jsc.entities.Empresa;
 import org.jsc.entities.Usuario;
+import org.jsc.entities.Vehiculo;
+import org.services.AseguradoService;
 import org.services.VehiculoService;
 
 import jakarta.inject.Inject;
@@ -12,6 +17,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 
@@ -23,31 +29,26 @@ public class VehiculoResource {
     @Inject
     VehiculoService services;
 
-    /* 
+    @Inject
+    AseguradoService aseguradoService;
+    
     @GET
-    @Path("/{page}/{size}")
-    public List<Usuario> listar(@PathParam("page") int page,
-                          @PathParam("size") int size) {
-        return services.listar(page, size);
+    public List<Vehiculo> listar(@QueryParam("page") int page,
+                        @QueryParam("size") int size,
+                        @QueryParam("placa") String placa) {
+        return services.listar(page, size, placa);
     }
 
     @GET
     @Path("/{id}")
-    public Usuario obtener(@PathParam("id") Long id) {
+    public Vehiculo obtener(@PathParam("id") UUID id) {
         return services.buscarPorId(id);
     }
 
     @POST
-    @Transactional
-    public Usuario crear(Usuario user) {
-
-        if (user.empresa != null && user.empresa.id != null) {
-            Empresa emp = empresaServices.buscarPorId(user.empresa.id);
-            user.empresa = emp;
-        }
-
-        services.crear(user);
-        return user;
+    public Vehiculo crear(Vehiculo vehiculo) {
+        services.crear(vehiculo);
+        return vehiculo;
     }
-    */
+    
 }

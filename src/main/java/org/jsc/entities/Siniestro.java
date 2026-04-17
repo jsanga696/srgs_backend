@@ -7,39 +7,43 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Siniestro {
     
     @Id
     @Column(nullable = false)
     @GeneratedValue
-    public UUID id;
+    private UUID id;
 
-    public UUID id_asegurado;
+    private UUID id_asegurado;
 
-    public UUID id_vehiculo;
+    private UUID id_vehiculo;
 
-    public Long id_usuario_perito;
+    private Long id_usuario_perito;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public LocalDateTime fecha;
+    private LocalDateTime fecha;
 
-    public String ubicacion;
+    private String ubicacion;
 
-    public String detalles;
-
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    public Boolean personasHeridas;
+    private String detalles;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    public Boolean necesitaGrua;
+    private Boolean personasHeridas;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean necesitaGrua;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean esPersonaNatural;
+    private Boolean esPersonaNatural;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean activo;
+    private Boolean activo;
 
     public Siniestro() {
     }

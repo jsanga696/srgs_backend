@@ -1,37 +1,57 @@
 package org.jsc.entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Vehiculo {
     
     @Id
     @Column(nullable = false)
     @GeneratedValue
-    public UUID id;
+    private UUID id;
 
-    public String chasis;
+    private String chasis;
 
-    public String marca;
+    private String placa;
 
-    public String modelo;
+    private String marca;
 
-    public String anio_fabricacion;
+    private String modelo;
+
+    private String color;
+
+    private String anio_fabricacion;
+
+    private String fechaMatricula;
+
+    private String fechaCaducidad;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "asegurado_id")
-    public Asegurado asegurado;
+    private Asegurado asegurado;
+
+    @JsonIgnoreProperties(value = "vehiculo", allowSetters = true)
+    @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL)
+    private List<CitacionVehiculo> citaciones;
 
     public Vehiculo() {
     }

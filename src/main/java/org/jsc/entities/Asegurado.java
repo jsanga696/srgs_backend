@@ -1,6 +1,7 @@
 package org.jsc.entities;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,37 +16,57 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Asegurado {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue
-    public UUID id;
+    private UUID id;
 
-    public Date fecha_ingreso;
+    private Date fecha_ingreso;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean activo;
+    private Boolean activo;
 
     @Column(nullable = false, unique = true)
-    public String nombres;
+    private String nombres;
 
-    public String identificacion;
+    private String identificacion;
 
-    public String direccion;
+    private String pais;
+
+    private String provincia;
+
+    private String ciudad;
+
+    private String direccion;
+
+    private String telefono;
+
+    private String celular;
+
+    private String email;
+
+    private LocalDateTime fecha_creacion;
+
+    private String usuario_creacion;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    public Boolean esPersonaNatural;
+    private Boolean esPersonaNatural;
 
     @JsonIgnoreProperties(value = "asegurado", allowSetters = true)
     @OneToMany(mappedBy = "asegurado", cascade = CascadeType.ALL)
-    public List<Vehiculo> vehiculos;
+    private List<Vehiculo> vehiculos;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    public Empresa empresa;
+    private Empresa empresa;
 
     public Asegurado() {
     }
