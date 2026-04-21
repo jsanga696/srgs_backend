@@ -43,7 +43,7 @@ public class EmpresaResource {
         Empresa e = em.find(Empresa.class, id);
         if (e == null) throw new NotFoundException();
 
-        e.nombre = data.nombre;
+        e.setNombre(data.getNombre());
         return e;
     }
 

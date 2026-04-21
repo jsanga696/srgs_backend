@@ -45,9 +45,9 @@ public class ClienteResource {
     @Transactional
     public Cliente crear(Cliente user) {
 
-        if (user.empresa != null && user.empresa.id != null) {
-            Empresa emp = empresaServices.buscarPorId(user.empresa.id);
-            user.empresa = emp;
+        if (user.getEmpresa() != null && user.getEmpresa().getId() != null) {
+            Empresa emp = empresaServices.buscarPorId(user.getEmpresa().getId());
+            user.setEmpresa(emp);
         }
 
         services.crear(user);

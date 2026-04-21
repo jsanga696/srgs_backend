@@ -53,7 +53,7 @@ public class PeritajeService {
 
         repository.guardar(peritajeReq);
 
-        Peritaje peritaje = buscarPorId(peritajeReq.id);
+        Peritaje peritaje = buscarPorId(peritajeReq.getId());
 
         PeritajeResponseDTO resp = new PeritajeResponseDTO();
         Asegurado asegurado;
@@ -62,15 +62,15 @@ public class PeritajeService {
         Siniestro siniestro;
 
 
-        if (peritaje.asegurado != null && peritaje.asegurado.id != null) {
-            asegurado = aseguradoService.buscarPorId(peritaje.asegurado.id);
+        if (peritaje.getAsegurado() != null && peritaje.getAsegurado().getId() != null) {
+            asegurado = aseguradoService.buscarPorId(peritaje.getAsegurado().getId());
             
-            resp.nombres_asegurado = asegurado.nombres;
-            resp.identificacion_asegurado = asegurado.identificacion;
+            resp.nombres_asegurado = asegurado.getNombres();
+            resp.identificacion_asegurado = asegurado.getIdentificacion();
         }
 
-        if (peritaje.vehiculo != null && peritaje.vehiculo.id != null) {
-            vehiculo = vehiculoService.buscarPorId(peritaje.vehiculo.id);
+        if (peritaje.getVehiculo() != null && peritaje.getVehiculo().getId() != null) {
+            vehiculo = vehiculoService.buscarPorId(peritaje.getVehiculo().getId());
 
             resp.chasis_vehiculo = vehiculo.getChasis();
             resp.marca_vehiculo = vehiculo.getMarca();
@@ -78,23 +78,23 @@ public class PeritajeService {
             resp.anio_vehiculo = vehiculo.getAnio_fabricacion();
         }
 
-        if (peritaje.perito != null && peritaje.perito.id != null) {
-            perito = usuarioService.buscarPorId(peritaje.perito.id);
+        if (peritaje.getPerito() != null && peritaje.getPerito().getId() != null) {
+            perito = usuarioService.buscarPorId(peritaje.getPerito().getId());
 
-            resp.nombres_perito = perito.nombres;
-            resp.identificacion_perito = perito.identificacion;
+            resp.nombres_perito = perito.getNombres();
+            resp.identificacion_perito = perito.getIdentificacion();
         }
 
-        if (peritaje.siniestro != null && peritaje.siniestro.id != null) {
-            siniestro = siniestroService.buscarPorId(peritaje.siniestro.id);
+        if (peritaje.getSiniestro() != null && peritaje.getSiniestro().getId() != null) {
+            siniestro = siniestroService.buscarPorId(peritaje.getSiniestro().getId());
             
-            resp.detalles_peritaje = siniestro.detalles;
+            resp.detalles_peritaje = siniestro.getDetalles();
         }
 
-        resp.codigo = peritaje.codigo;
-        resp.fecha = peritaje.fecha;
-        resp.procede = peritaje.procede;
-        resp.id = peritaje.id;
+        resp.codigo = peritaje.getCodigo();
+        resp.fecha = peritaje.getFecha();
+        resp.procede = peritaje.getProcede();
+        resp.id = peritaje.getId();
 
         return resp;
     }

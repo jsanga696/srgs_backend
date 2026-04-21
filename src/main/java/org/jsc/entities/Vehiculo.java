@@ -15,12 +15,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Table(
+    name = "vehiculo",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"placa", "asegurado_id"})
+)
 public class Vehiculo {
     
     @Id
@@ -30,6 +36,7 @@ public class Vehiculo {
 
     private String chasis;
 
+    @Column(nullable = false)
     private String placa;
 
     private String marca;
@@ -44,9 +51,10 @@ public class Vehiculo {
 
     private String fechaCaducidad;
 
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne
     @JoinColumn(name = "asegurado_id")
+    @JsonIgnoreProperties("vehiculos")
     private Asegurado asegurado;
 
     @JsonIgnoreProperties(value = "vehiculo", allowSetters = true)

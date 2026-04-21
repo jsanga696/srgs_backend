@@ -3,6 +3,7 @@ package org.jsc.resources;
 import java.util.List;
 import java.util.UUID;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Asegurado;
 import org.jsc.entities.Cliente;
 import org.jsc.entities.Empresa;
@@ -16,6 +17,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -33,7 +35,7 @@ public class AseguradoResource {
     AseguradoService services;
 
     @GET
-    public List<Asegurado> listar(@QueryParam("page") int page,
+    public PageResponse<Asegurado> listar(@QueryParam("page") int page,
                         @QueryParam("size") int size,
                         @QueryParam("identificacion") String identificacion) {
         return services.listar(page, size, identificacion);
@@ -54,14 +56,26 @@ public class AseguradoResource {
     @POST
     public Response crear(Asegurado asegurado) {
 
-        if (asegurado == null) {
-            throw new WebApplicationException("Asegurado requerido", 400);
-        }
-
         Asegurado nuevo = services.crear(asegurado);
 
         return Response.status(Response.Status.CREATED)
                 .entity(nuevo)
                 .build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    public Response actualizar(@PathParam("id") UUID id, Asegurado data) {
+
+        try{
+            Asegurado nuevo = services.actualizar(id, data);
+
+            return Response.status(Response.Status.CREATED)
+                    .entity(nuevo)
+                    .build();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

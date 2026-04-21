@@ -25,14 +25,14 @@ public class AuthResource {
             .findFirst()
             .orElse(null);
 
-        if (user == null || !user.password.equals(request.password)) {
+        if (user == null || !user.getPassword().equals(request.password)) {
             return Response.status(401).build();
         }
 
         // Validación de empresa
-        if (!"SUPERADMIN".equals(user.rol)) {
-            if (user.empresa == null || 
-                !user.empresa.id.equals(request.empresaId)) {
+        if (!"SUPERADMIN".equals(user.getRol())) {
+            if (user.getEmpresa() == null || 
+                !user.getEmpresa().getId().equals(request.empresaId)) {
                 return Response.status(403).entity("Empresa inválida").build();
             }
         }

@@ -34,9 +34,10 @@ public class Asegurado {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean activo;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nombres;
 
+    @Column(nullable = false, unique = true)
     private String identificacion;
 
     private String pais;
@@ -61,7 +62,7 @@ public class Asegurado {
     private Boolean esPersonaNatural;
 
     @JsonIgnoreProperties(value = "asegurado", allowSetters = true)
-    @OneToMany(mappedBy = "asegurado", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "asegurado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vehiculo> vehiculos;
 
     @ManyToOne

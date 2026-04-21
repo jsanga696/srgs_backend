@@ -3,6 +3,7 @@ package org.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Asegurado;
 import org.jsc.entities.Empresa;
 import org.jsc.entities.Vehiculo;
@@ -46,33 +47,21 @@ public class AseguradoService {
         return asegurado;
     }
 
-    public List<Asegurado> listar(int page, int size, String identificacion) {
+    public PageResponse<Asegurado> listar(int page, int size, String identificacion) {
         return repository.listar(page, size, identificacion);
     }
 
+    @Transactional
     public Asegurado crear(Asegurado asegurado) {
         return repository.guardar(asegurado);
     }
 
-    /*@Transactional
-    public Asegurado crear(Asegurado asegurado) {
+    @Transactional
+    public Asegurado actualizar(UUID id, Asegurado asegurado) {
 
-        if (asegurado.empresa != null && asegurado.empresa.id != null) {
-            Empresa emp = empresaServices.buscarPorId(asegurado.empresa.id);
-            asegurado.empresa = emp;
-        }
+        Asegurado ret = repository.actualizar(id, asegurado);
 
-        if (asegurado.vehiculos != null) {
-            for (Vehiculo item : asegurado.vehiculos) {
-                item.asegurado = asegurado;
-            }
-        }else{
-            System.out.println("Es NULL");
-        }
-
-        repository.guardar(asegurado);
-
-        return asegurado;
-    }*/
+        return ret;
+    }
 
 }

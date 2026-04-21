@@ -40,9 +40,9 @@ public class UsuarioResource {
     @Transactional
     public Usuario crear(Usuario user) {
 
-        if (user.empresa != null && user.empresa.id != null) {
-            Empresa emp = empresaServices.buscarPorId(user.empresa.id);
-            user.empresa = emp;
+        if (user.getEmpresa() != null && user.getEmpresa().getId() != null) {
+            Empresa emp = empresaServices.buscarPorId(user.getEmpresa().getId());
+            user.setEmpresa(emp);
         }
 
         services.crear(user);
@@ -56,12 +56,12 @@ public class UsuarioResource {
         Usuario u = services.buscarPorId(id);
         if (u == null) throw new NotFoundException();
 
-        u.username = data.username;
-        u.password = data.password;
-        u.rol = data.rol;
+        u.setUsername(data.getUsername());
+        u.setPassword(data.getPassword());
+        u.setRol(data.getRol());
 
-        if (data.empresa != null && data.empresa.id != null) {
-            u.empresa = empresaServices.buscarPorId(data.empresa.id);
+        if (data.getEmpresa() != null && data.getEmpresa().getId() != null) {
+            u.setEmpresa(empresaServices.buscarPorId(data.getEmpresa().getId()));
         }
 
         return u;
