@@ -11,7 +11,7 @@ public class VehiculoCitaciones {
     private String marca;
     private String color;
     private String modelo;
-    private String anio;
+    private String anio_fabricacion;
     private String fechaMatricula;
     private String fechaCaducidad;
     private List<Citacion> citaciones;

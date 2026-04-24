@@ -47,8 +47,8 @@ public class AseguradoService {
         return asegurado;
     }
 
-    public PageResponse<Asegurado> listar(int page, int size, String identificacion) {
-        return repository.listar(page, size, identificacion);
+    public PageResponse<Asegurado> listar(int page, int size, String identificacion, String nombres) {
+        return repository.listar(page, size, identificacion, nombres);
     }
 
     @Transactional

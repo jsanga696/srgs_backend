@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.jsc.entities.Usuario;
 import org.services.EmpresaService;
 import org.services.UsuarioService;
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Empresa;
 
 import java.util.List;
@@ -24,10 +25,10 @@ public class UsuarioResource {
     EmpresaService empresaServices;
 
     @GET
-    @Path("/{page}/{size}")
-    public List<Usuario> listar(@PathParam("page") int page,
-                          @PathParam("size") int size) {
-        return services.listar(page, size);
+    public PageResponse<Usuario> listar(@QueryParam("page") int page,
+                                @QueryParam("size") int size,
+                                @QueryParam("nombres") String nombres) {
+        return services.listar(page, size, nombres);
     }
 
     @GET

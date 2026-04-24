@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.jsc.dtos.PageResponse;
+import org.jsc.entities.Asegurado;
 import org.jsc.entities.Vehiculo;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -20,17 +24,22 @@ public class VehiculoRepository implements PanacheRepository<Vehiculo>{
         return find("id", id).firstResult();
     }
 
-    public List<Vehiculo> listar(int page, int size, String placa) {
-        if (placa != null && !placa.isEmpty()) {
-            return find("LOWER(placa) like ?1",
-                    "%" + placa.toLowerCase() + "%")
-                    .page(page, size)
-                    .list();
-        }
+    public PageResponse<Vehiculo> listar(int page, int size, String placa) {
+        
+        PanacheQuery<Vehiculo> query;
 
-        return findAll()
+        if(placa != null && !placa.isEmpty())
+                query = find("lower(placa) ilike ?1 order by placa desc", "%" + placa.toLowerCase() + "%");
+            else
+                query = findAll(Sort.by("placa").descending());
+
+        long total = query.count();
+
+        List<Vehiculo> data = query
                 .page(page, size)
                 .list();
+
+        return new PageResponse<>(data, total, page, size);
     }
 
     public Vehiculo guardar(Vehiculo vehiculo) {

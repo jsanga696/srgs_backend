@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Asegurado;
-import org.jsc.entities.Cliente;
 import org.jsc.entities.Empresa;
 import org.jsc.entities.Vehiculo;
 import org.services.AseguradoService;
@@ -37,8 +36,9 @@ public class AseguradoResource {
     @GET
     public PageResponse<Asegurado> listar(@QueryParam("page") int page,
                         @QueryParam("size") int size,
-                        @QueryParam("identificacion") String identificacion) {
-        return services.listar(page, size, identificacion);
+                        @QueryParam("identificacion") String identificacion,
+                    @QueryParam("nombres") String nombres) {
+        return services.listar(page, size, identificacion, nombres);
     }
 
     @GET

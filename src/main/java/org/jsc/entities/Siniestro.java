@@ -20,11 +20,20 @@ public class Siniestro {
     @GeneratedValue
     private UUID id;
 
+    private String codigo;
+
     private UUID id_asegurado;
 
-    private UUID id_vehiculo;
+    private String identificacion_asegurado;
+    private String nombre_asegurado;
 
-    private Long id_usuario_perito;
+    private UUID id_vehiculo;
+    private String placa;
+
+    /*private Long id_usuario_perito;
+    
+    private String identificacion_perito;
+    private String nombre_perito;*/
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fecha;
@@ -42,8 +51,7 @@ public class Siniestro {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean esPersonaNatural;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    private Boolean activo;
+    private String estado;
 
     public Siniestro() {
     }

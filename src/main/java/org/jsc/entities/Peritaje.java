@@ -1,16 +1,19 @@
 package org.jsc.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,22 +27,23 @@ public class Peritaje {
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_siniestro")
-    private Siniestro siniestro;
+    private UUID id_siniestro;
 
-    @ManyToOne
-    @JoinColumn(name = "id_asegurado")
-    private Asegurado asegurado;
+    private UUID id_asegurado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_vehiculo")
-    private Vehiculo vehiculo;
+    private String identificacion_asegurado;
+    private String nombre_asegurado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario perito;
+    private UUID id_vehiculo;
 
+    private String placa;
+
+    private Long id_usuario_perito;
+
+    private String identificacion_perito;
+    private String nombre_perito;
+
+    private String detalles;
     private String codigo;
 
     private String ruta_archivos;
@@ -51,4 +55,7 @@ public class Peritaje {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean procede;
 
+    @JsonIgnoreProperties(value = "peritaje", allowSetters = true)
+    @OneToMany(mappedBy = "peritaje", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Archivo> archivos;
 }

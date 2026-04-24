@@ -76,7 +76,7 @@ public class AtmScraperService {
             ret.setMarca(marca);
             ret.setColor(color);
             ret.setModelo(modelo);
-            ret.setAnio(anio);
+            ret.setAnio_fabricacion(anio);
             ret.setFechaMatricula(fechaMatricula);
             ret.setFechaCaducidad(fechaCaducidad);
             

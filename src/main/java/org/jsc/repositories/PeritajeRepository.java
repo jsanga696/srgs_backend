@@ -1,11 +1,16 @@
 package org.jsc.repositories;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Peritaje;
+import org.jsc.entities.Siniestro;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -15,11 +20,39 @@ public class PeritajeRepository implements PanacheRepository<Peritaje>{
         return find("id", id).firstResult();
     }
 
-    public List<Peritaje> listar(int page, int size) {
-        return findAll().page(page, size).list();
+    public PageResponse<Peritaje> listar(int page, int size, String nombres) {
+        PanacheQuery<Peritaje> query;
+
+        if(nombres != null && !nombres.isEmpty())
+            query = find("lower(nombre_asegurado) ilike ?1 order by fecha desc", "%" + nombres.toLowerCase() + "%");
+        else
+            query = findAll(Sort.by("fecha").descending());
+        
+        long total = query.count();
+
+        List<Peritaje> data = query
+            .page(page, size)
+            .list();
+
+        return new PageResponse<>(data, total, page, size);
     }
 
     public Peritaje guardar(Peritaje peritaje) {
+
+        LocalDate fecha = LocalDate.now();
+
+        int anio = fecha.getYear();
+        int mes = fecha.getMonthValue();
+        int sec = 1;
+
+        List tmp = find("codigo ilike ?1", (anio + mes + "-" + peritaje.getIdentificacion_asegurado()) + "-%").list();
+
+        if(tmp != null){
+            sec = tmp.size() + 1;
+        }
+
+        peritaje.setCodigo(anio + mes + "-" + peritaje.getIdentificacion_asegurado() + "-" + sec);
+
         persist(peritaje);
         return peritaje;
     }

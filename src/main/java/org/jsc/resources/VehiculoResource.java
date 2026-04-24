@@ -3,6 +3,8 @@ package org.jsc.resources;
 import java.util.List;
 import java.util.UUID;
 
+import org.jsc.dtos.PageResponse;
+import org.jsc.entities.Asegurado;
 import org.jsc.entities.Empresa;
 import org.jsc.entities.Usuario;
 import org.jsc.entities.Vehiculo;
@@ -33,7 +35,7 @@ public class VehiculoResource {
     AseguradoService aseguradoService;
     
     @GET
-    public List<Vehiculo> listar(@QueryParam("page") int page,
+    public PageResponse<Vehiculo> listar(@QueryParam("page") int page,
                         @QueryParam("size") int size,
                         @QueryParam("placa") String placa) {
         return services.listar(page, size, placa);
@@ -41,8 +43,14 @@ public class VehiculoResource {
 
     @GET
     @Path("/{id}")
-    public Vehiculo obtener(@PathParam("id") UUID id) {
+    public Vehiculo obtener(@PathParam("id")  UUID id) {
         return services.buscarPorId(id);
+    }
+
+    @GET
+    @Path("/placa/{placa}")
+    public Vehiculo buscarPorPlaca(@PathParam("placa") String placa) {
+        return services.buscarPorPlaca(placa);
     }
 
     @POST

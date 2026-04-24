@@ -1,23 +1,43 @@
 package org.services;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import org.jsc.dtos.PeritajeResponseDTO;
-import org.jsc.entities.Asegurado;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
+import org.jsc.dtos.PageResponse;
+import org.jsc.dtos.PeritajeDTO;
+import org.jsc.entities.Archivo;
 import org.jsc.entities.Peritaje;
 import org.jsc.entities.Siniestro;
-import org.jsc.entities.Usuario;
-import org.jsc.entities.Vehiculo;
+import org.jsc.repositories.ArchivoRepository;
 import org.jsc.repositories.PeritajeRepository;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 public class PeritajeService {
     
+    @ConfigProperty(name = "app.upload.dir")
+    String uploadDir;
+
+    @Inject
+    ObjectMapper mapper;
+
+    @Inject
+    ArchivoRepository archivoRepository;
+
     @Inject
     PeritajeRepository repository;
 
@@ -44,59 +64,79 @@ public class PeritajeService {
         return peritaje;
     }
 
-    public List<Peritaje> listar(int page, int size) {
-        return repository.listar(page, size);
+    public PageResponse<Peritaje> listar(int page, int size, String nombres) {
+        return repository.listar(page, size, nombres);
     }
 
     @Transactional
-    public PeritajeResponseDTO crear(Peritaje peritajeReq) {
+    public Peritaje crear(Peritaje peritajeReq) {
 
         repository.guardar(peritajeReq);
 
-        Peritaje peritaje = buscarPorId(peritajeReq.getId());
+        return peritajeReq;
+    }
 
-        PeritajeResponseDTO resp = new PeritajeResponseDTO();
-        Asegurado asegurado;
-        Vehiculo vehiculo;
-        Usuario perito;
-        Siniestro siniestro;
+    @Transactional
+    public Peritaje guardar(String dataJson, List<FileUpload> files) {
 
+        try {
+            PeritajeDTO dto = mapper.readValue(dataJson, PeritajeDTO.class);
 
-        if (peritaje.getAsegurado() != null && peritaje.getAsegurado().getId() != null) {
-            asegurado = aseguradoService.buscarPorId(peritaje.getAsegurado().getId());
+            Path folder = Paths.get(uploadDir, dto.getCodigoSiniestro() + "P");
+
+            if (!Files.exists(folder)) {
+                Files.createDirectories(folder);
+            }
+
+            Siniestro siniestro = siniestroService.buscarPorId(dto.getId_siniestro());
+
+            if(siniestro == null){
+                throw new WebApplicationException("Siniestro no encontrado", Response.Status.NOT_FOUND);
+            }
             
-            resp.nombres_asegurado = asegurado.getNombres();
-            resp.identificacion_asegurado = asegurado.getIdentificacion();
-        }
+            siniestro.setEstado("Peritado");
 
-        if (peritaje.getVehiculo() != null && peritaje.getVehiculo().getId() != null) {
-            vehiculo = vehiculoService.buscarPorId(peritaje.getVehiculo().getId());
+            Peritaje peritaje = new Peritaje();
+            peritaje.setDetalles(dto.getDetalles());
+            peritaje.setFecha(LocalDateTime.now());
+            peritaje.setCodigo(dto.getCodigoSiniestro() + "P");
+            peritaje.setId_asegurado(dto.getIdAsegurado());
+            peritaje.setId_siniestro(dto.getId_siniestro());
+            peritaje.setId_usuario_perito(dto.getIdUsuarioPerito());
+            peritaje.setId_vehiculo(dto.getIdVehiculo());
+            peritaje.setIdentificacion_asegurado(dto.getIdentificacion_asegurado());
+            peritaje.setIdentificacion_perito(dto.getIdentificacion_perito());
+            peritaje.setNombre_asegurado(dto.getNombre_asegurado());
+            peritaje.setNombre_perito(dto.getNombre_perito());
+            peritaje.setPlaca(dto.getPlacaVehiculo());
+            peritaje.setProcede(dto.getProcede());
+            peritaje.setRuta_archivos(folder.toString());
 
-            resp.chasis_vehiculo = vehiculo.getChasis();
-            resp.marca_vehiculo = vehiculo.getMarca();
-            resp.modelo_vehiculo = vehiculo.getModelo();
-            resp.anio_vehiculo = vehiculo.getAnio_fabricacion();
-        }
+            repository.persist(peritaje);
 
-        if (peritaje.getPerito() != null && peritaje.getPerito().getId() != null) {
-            perito = usuarioService.buscarPorId(peritaje.getPerito().getId());
+            if (files != null) {
 
-            resp.nombres_perito = perito.getNombres();
-            resp.identificacion_perito = perito.getIdentificacion();
-        }
+                for (FileUpload file : files) {                    
 
-        if (peritaje.getSiniestro() != null && peritaje.getSiniestro().getId() != null) {
-            siniestro = siniestroService.buscarPorId(peritaje.getSiniestro().getId());
+                    Files.copy(
+                        file.uploadedFile(),
+                        folder.resolve(folder.resolve(file.fileName())),
+                        StandardCopyOption.REPLACE_EXISTING
+                    );
+
+                    Archivo archivo = new Archivo();
+                    archivo.setNombre(file.fileName());
+                    archivo.setPeritaje(peritaje);
+
+                    archivoRepository.persist(archivo);
+                }
+            }
             
-            resp.detalles_peritaje = siniestro.getDetalles();
+            return peritaje;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        resp.codigo = peritaje.getCodigo();
-        resp.fecha = peritaje.getFecha();
-        resp.procede = peritaje.getProcede();
-        resp.id = peritaje.getId();
-
-        return resp;
     }
 
 }

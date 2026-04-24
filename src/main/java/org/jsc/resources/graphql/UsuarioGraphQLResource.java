@@ -17,10 +17,10 @@ public class UsuarioGraphQLResource {
         return service.buscarPorId(id);
     }
 
-    @Query
+    /*@Query
     public List<Usuario> usuarios() {
         return service.listar(0,0);
-    }
+    }*/
 
     @Mutation
     public Usuario crearUsuario(Usuario input) {

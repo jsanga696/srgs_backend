@@ -44,6 +44,17 @@ public class EmpresaResource {
         if (e == null) throw new NotFoundException();
 
         e.setNombre(data.getNombre());
+        e.setRazon_social(data.getRazon_social());
+        e.setCelular(data.getCelular());
+        e.setCiudad(data.getCiudad());
+        e.setDireccion(data.getDireccion());
+        e.setEmail(data.getEmail());
+        e.setPais(data.getPais());
+        e.setProvincia(data.getProvincia());
+        e.setTelefono(data.getTelefono());
+        e.setRuc(data.getRuc());
+        e.setActivo(data.getActivo());
+
         return e;
     }
 

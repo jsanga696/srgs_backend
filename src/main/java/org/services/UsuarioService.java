@@ -2,6 +2,7 @@ package org.services;
 
 import java.util.List;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Usuario;
 import org.jsc.repositories.UsuarioRepository;
 
@@ -25,8 +26,8 @@ public class UsuarioService {
         return usuario;
     }
 
-    public List<Usuario> listar(int page, int size) {
-        return repository.listar(page, size);
+    public PageResponse<Usuario> listar(int page, int size, String nombres) {
+        return repository.listar(page, size, nombres);
     }
 
     public Usuario crear(Usuario usuario) {

@@ -30,14 +30,16 @@ public class AseguradoRepository implements PanacheRepository<Asegurado>{
         return find("identificacion", identificacion).firstResult();
     }
 
-    public PageResponse<Asegurado> listar(int page, int size, String identificacion) {
+    public PageResponse<Asegurado> listar(int page, int size, String identificacion, String nombres) {
         PanacheQuery<Asegurado> query;
 
         if (identificacion != null && !identificacion.isEmpty()) {
             query = find("identificacion = ?1 order by fecha_creacion desc", identificacion);
-
         } else {
-            query = findAll(Sort.by("fecha_creacion").descending());
+            if(nombres != null && !nombres.isEmpty())
+                query = find("lower(nombres) ilike ?1 order by fecha_creacion desc", "%" + nombres.toLowerCase() + "%");
+            else
+                query = findAll(Sort.by("fecha_creacion").descending());
         }
 
         long total = query.count();
