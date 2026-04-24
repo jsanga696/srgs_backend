@@ -1,10 +1,13 @@
 package org.jsc.repositories;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.jsc.dtos.PageResponse;
+import org.jsc.entities.Asegurado;
 import org.jsc.entities.Peritaje;
 import org.jsc.entities.Siniestro;
 
@@ -20,8 +23,32 @@ public class PeritajeRepository implements PanacheRepository<Peritaje>{
         return find("id", id).firstResult();
     }
 
-    public PageResponse<Peritaje> listar(int page, int size, String nombres) {
-        PanacheQuery<Peritaje> query;
+    public PageResponse<Peritaje> listar(int page, int size, String codigo, String nombres) {
+
+        StringBuilder queryStr = new StringBuilder("1=1");
+        Map<String, Object> params = new HashMap<>();
+
+        if (nombres != null && !nombres.isEmpty()) {
+            queryStr.append(" and lower(nombre_asegurado) like :nombres");
+            params.put("nombres", "%" + nombres.toLowerCase() + "%");
+        }
+
+        if (codigo != null && !codigo.isEmpty()) {
+            queryStr.append(" and lower(codigo) like :identificacion");
+            params.put("identificacion", "%" + codigo.toLowerCase() + "%");
+        }
+
+        PanacheQuery<Peritaje> query = find(queryStr.toString(), Sort.by("fecha").descending(), params);
+
+        long total = findAll().count();
+
+        List<Peritaje> data = query
+            .page(page, size)
+            .list();
+
+        return new PageResponse<>(data, total, page, size);
+
+        /*PanacheQuery<Peritaje> query;
 
         if(nombres != null && !nombres.isEmpty())
             query = find("lower(nombre_asegurado) ilike ?1 order by fecha desc", "%" + nombres.toLowerCase() + "%");
@@ -34,7 +61,7 @@ public class PeritajeRepository implements PanacheRepository<Peritaje>{
             .page(page, size)
             .list();
 
-        return new PageResponse<>(data, total, page, size);
+        return new PageResponse<>(data, total, page, size);*/
     }
 
     public Peritaje guardar(Peritaje peritaje) {

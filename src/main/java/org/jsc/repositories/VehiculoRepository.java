@@ -33,7 +33,7 @@ public class VehiculoRepository implements PanacheRepository<Vehiculo>{
             else
                 query = findAll(Sort.by("placa").descending());
 
-        long total = query.count();
+        long total = findAll().count();
 
         List<Vehiculo> data = query
                 .page(page, size)

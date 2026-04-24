@@ -46,7 +46,7 @@ public class SiniestroRepository implements PanacheRepository<Siniestro>{
 
         PanacheQuery<Siniestro> query = find(queryStr.toString(), Sort.by("fecha").descending(), params);
 
-        long total = query.count();
+        long total = findAll().count();
 
         List<Siniestro> data = query
             .page(page, size)

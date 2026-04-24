@@ -64,8 +64,8 @@ public class PeritajeService {
         return peritaje;
     }
 
-    public PageResponse<Peritaje> listar(int page, int size, String nombres) {
-        return repository.listar(page, size, nombres);
+    public PageResponse<Peritaje> listar(int page, int size, String codigo, String nombres) {
+        return repository.listar(page, size, codigo, nombres);
     }
 
     @Transactional

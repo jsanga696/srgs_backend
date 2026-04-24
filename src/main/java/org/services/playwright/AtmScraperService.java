@@ -13,6 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.jsc.dtos.VehiculoCitaciones;
 import org.jsc.utils.CitacionService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.services.VehiculoService;
 
 @ApplicationScoped
@@ -43,6 +45,7 @@ public class AtmScraperService {
         VehiculoCitaciones ret = new VehiculoCitaciones();
         List<Citacion> listTotal = new ArrayList<Citacion>();
         List<Citacion> list;
+        String psPersona = "";
 
         try (Playwright playwright = Playwright.create()) {
 
@@ -65,6 +68,19 @@ public class AtmScraperService {
 
             Document doc = Jsoup.parse(page.content());
 
+            Element iframe = doc.getElementById("iframe_estado_cuenta");
+
+            String src = iframe.attr("src");
+
+            String query = src.split("\\?")[1];
+
+            psPersona = Arrays.stream(query.split("&"))
+                .map(param -> param.split("="))
+                .filter(pair -> pair[0].equals("ps_persona"))
+                .map(pair -> pair[1])
+                .findFirst()
+                .orElse(null);
+
             String marca = doc.select("td:contains(Marca:) + td").text();
             String color = doc.select("td:contains(Color:) + td").text();
             String modelo = doc.select("td:contains(Modelo:) + td").text();
@@ -80,7 +96,6 @@ public class AtmScraperService {
             ret.setFechaMatricula(fechaMatricula);
             ret.setFechaCaducidad(fechaCaducidad);
             
-            // 2. obtener cookies reales del navegador
             List<Cookie> cookies = context.cookies();
 
             String cookieHeader = cookies.stream()
@@ -90,7 +105,7 @@ public class AtmScraperService {
 
             String url = "https://consultas.atm.gob.ec/PortalWEB/paginas/clientes/clp_json_citaciones.jsp"
                     + "?ps_opcion=G"
-                    + "&ps_id_persona=6385439"
+                    + "&ps_id_persona=" + psPersona
                     + "&ps_placa=" + placa
                     + "&ps_identificacion=" + placa
                     + "&ps_tipo_identificacion=PLA"
@@ -118,7 +133,7 @@ public class AtmScraperService {
 
             url = "https://consultas.atm.gob.ec/PortalWEB/paginas/clientes/clp_json_citaciones.jsp"
                     + "?ps_opcion=P"
-                    + "&ps_id_persona=6385439"
+                    + "&ps_id_persona=" + psPersona
                     + "&ps_placa=" + placa
                     + "&ps_identificacion=" + placa
                     + "&ps_tipo_identificacion=PLA"
@@ -146,7 +161,7 @@ public class AtmScraperService {
 
             url = "https://consultas.atm.gob.ec/PortalWEB/paginas/clientes/clp_json_citaciones.jsp"
                     + "?ps_opcion=A"
-                    + "&ps_id_persona=6385439"
+                    + "&ps_id_persona=" + psPersona
                     + "&ps_placa=" + placa
                     + "&ps_identificacion=" + placa
                     + "&ps_tipo_identificacion=PLA"

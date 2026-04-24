@@ -1,11 +1,14 @@
 package org.jsc.repositories;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Asegurado;
+import org.jsc.entities.Siniestro;
 import org.jsc.entities.Vehiculo;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -31,25 +34,33 @@ public class AseguradoRepository implements PanacheRepository<Asegurado>{
     }
 
     public PageResponse<Asegurado> listar(int page, int size, String identificacion, String nombres) {
-        PanacheQuery<Asegurado> query;
+        
+        StringBuilder queryStr = new StringBuilder("1=1");
+        Map<String, Object> params = new HashMap<>();
+        boolean tieneFiltros = false;
+        //long total;
 
-        if (identificacion != null && !identificacion.isEmpty()) {
-            query = find("identificacion = ?1 order by fecha_creacion desc", identificacion);
-        } else {
-            if(nombres != null && !nombres.isEmpty())
-                query = find("lower(nombres) ilike ?1 order by fecha_creacion desc", "%" + nombres.toLowerCase() + "%");
-            else
-                query = findAll(Sort.by("fecha_creacion").descending());
+        if (nombres != null && !nombres.isEmpty()) {
+            queryStr.append(" and lower(nombre_asegurado) like :nombres");
+            params.put("nombres", "%" + nombres.toLowerCase() + "%");
+            tieneFiltros = true;
         }
 
-        long total = query.count();
+        if (identificacion != null && !identificacion.isEmpty()) {
+            queryStr.append(" and lower(identificacion) like :identificacion");
+            params.put("identificacion", "%" + identificacion.toLowerCase() + "%");
+            tieneFiltros = true;
+        }
+
+        PanacheQuery<Asegurado> query = find(queryStr.toString(), Sort.by("fecha_ingreso").descending(), params);
+
+        long total = query.count(); 
 
         List<Asegurado> data = query
             .page(page, size)
             .list();
 
         return new PageResponse<>(data, total, page, size);
-
     }
     
     public Asegurado actualizar(UUID id, Asegurado asegurado) {

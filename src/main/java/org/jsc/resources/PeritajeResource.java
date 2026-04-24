@@ -43,8 +43,9 @@ public class PeritajeResource {
     @GET
     public PageResponse<Peritaje> listar(@QueryParam("page") int page,
                         @QueryParam("size") int size,
+                        @QueryParam("codigo") String codigo,
                         @QueryParam("nombres") String nombres) {
-        return services.listar(page, size, nombres);
+        return services.listar(page, size, codigo, nombres);
     }
 
     @GET

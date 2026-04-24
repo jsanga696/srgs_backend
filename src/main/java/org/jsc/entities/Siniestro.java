@@ -29,11 +29,9 @@ public class Siniestro {
 
     private UUID id_vehiculo;
     private String placa;
-
-    /*private Long id_usuario_perito;
     
-    private String identificacion_perito;
-    private String nombre_perito;*/
+    private String identificacion_contraparte;
+    private String nombre_contraparte;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fecha;
