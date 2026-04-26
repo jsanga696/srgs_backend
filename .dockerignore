@@ -1,5 +1,7 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# Excluir archivos innecesarios
+.git
+.gitignore
+README.md
+target/
+*.md
+.mvn/wrapper/maven-wrapper.properties
