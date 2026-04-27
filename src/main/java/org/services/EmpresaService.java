@@ -2,6 +2,7 @@ package org.services;
 
 import java.util.List;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Empresa;
 import org.jsc.repositories.EmpresaRepository;
 
@@ -14,15 +15,9 @@ public class EmpresaService {
     @Inject
     EmpresaRepository repository;
 
-    public Empresa buscarPorId(Long id) {
+    public PageResponse<Empresa> buscarEmpresa(int page, int size, String identificacion, String nombre, String razonSocial) {
 
-        Empresa empresa = repository.buscarPorId(id);
-
-        if (empresa == null) {
-            throw new RuntimeException("Empresa no encontrado");
-        }
-
-        return empresa;
+        return repository.buscarEmpresa(page, size, identificacion, nombre, razonSocial);
     }
 
     public List<Empresa> listar(int page, int size) {

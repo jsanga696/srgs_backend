@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Asegurado;
-import org.jsc.entities.Siniestro;
 import org.jsc.entities.Vehiculo;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -37,19 +36,15 @@ public class AseguradoRepository implements PanacheRepository<Asegurado>{
         
         StringBuilder queryStr = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
-        boolean tieneFiltros = false;
-        //long total;
 
         if (nombres != null && !nombres.isEmpty()) {
-            queryStr.append(" and lower(nombre_asegurado) like :nombres");
+            queryStr.append(" and lower(nombres) like :nombres");
             params.put("nombres", "%" + nombres.toLowerCase() + "%");
-            tieneFiltros = true;
         }
 
         if (identificacion != null && !identificacion.isEmpty()) {
             queryStr.append(" and lower(identificacion) like :identificacion");
             params.put("identificacion", "%" + identificacion.toLowerCase() + "%");
-            tieneFiltros = true;
         }
 
         PanacheQuery<Asegurado> query = find(queryStr.toString(), Sort.by("fecha_ingreso").descending(), params);

@@ -26,6 +26,10 @@ public class UsuarioService {
         return usuario;
     }
 
+    public Usuario buscarPorCredenciales(String username, String password) {
+        return repository.buscarPorCredenciales(username, password);
+    }
+
     public PageResponse<Usuario> listar(int page, int size, String nombres) {
         return repository.listar(page, size, nombres);
     }

@@ -1,7 +1,10 @@
 package org.jsc.dtos;
 
+import lombok.Data;
+
+@Data
 public class LoginRequest {
-    public String username;
-    public String password;
-    public Long empresaId;
+    private String username;
+    private String password;
+    private Long empresaId;
 }

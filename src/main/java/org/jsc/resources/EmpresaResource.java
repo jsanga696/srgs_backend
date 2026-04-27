@@ -6,9 +6,9 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import org.jsc.dtos.PageResponse;
 import org.jsc.entities.Empresa;
-
-import java.util.List;
+import org.services.EmpresaService;
 
 @Path("/empresas")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,9 +18,16 @@ public class EmpresaResource {
     @Inject
     EntityManager em;
 
+    @Inject
+    EmpresaService service;
+
     @GET
-    public List<Empresa> listar() {
-        return em.createQuery("from Empresa", Empresa.class).getResultList();
+    public PageResponse<Empresa> listar(@QueryParam("page") int page,
+                        @QueryParam("size") int size,
+                        @QueryParam("identificacion") String identificacion,
+                        @QueryParam("nombres") String nombres,
+                        @QueryParam("razon_social") String razon_social) {
+        return service.buscarEmpresa(page, size, identificacion, nombres, razon_social);
     }
 
     @GET

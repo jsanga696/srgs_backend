@@ -18,6 +18,10 @@ public class UsuarioRepository implements PanacheRepository<Usuario> {
         return find("id", id).firstResult();
     }
 
+    public Usuario buscarPorCredenciales(String username, String password) {
+        return find("username = ?1 and password = ?2", username, password).firstResult();
+    }
+
     public PageResponse<Usuario> listar(int page, int size, String nombres) {
         PanacheQuery<Usuario> query;
 
