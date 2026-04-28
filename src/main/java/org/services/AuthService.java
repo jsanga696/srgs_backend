@@ -13,7 +13,7 @@ public class AuthService {
 
         return Jwt.issuer("srgs-app")
                 .upn(username)
-                .groups(Set.of(username))
+                .groups("user")
                 .expiresIn(Duration.ofHours(8))
                 .sign();
     }

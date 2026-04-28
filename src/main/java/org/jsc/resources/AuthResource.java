@@ -1,5 +1,6 @@
 package org.jsc.resources;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.*;
@@ -11,6 +12,7 @@ import org.services.AuthService;
 import org.services.UsuarioService;
 
 @Path("/auth")
+@PermitAll
 public class AuthResource {
 
     @Inject

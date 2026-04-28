@@ -1,5 +1,6 @@
 package org.jsc.resources;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -11,6 +12,7 @@ import org.jsc.entities.Empresa;
 import org.services.EmpresaService;
 
 @Path("/empresas")
+@RolesAllowed("user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EmpresaResource {

@@ -1,5 +1,6 @@
 package org.jsc.resources;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -14,6 +15,7 @@ import org.jsc.entities.Empresa;
 import java.util.List;
 
 @Path("/usuarios")
+@RolesAllowed("user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UsuarioResource {

@@ -11,6 +11,7 @@ import org.jsc.entities.Siniestro;
 import org.jsc.entities.Usuario;
 import org.services.SiniestroService;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -26,6 +27,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/siniestros")
+@RolesAllowed("user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SiniestroResource {
