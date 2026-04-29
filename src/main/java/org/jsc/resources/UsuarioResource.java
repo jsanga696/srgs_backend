@@ -43,10 +43,10 @@ public class UsuarioResource {
     @Transactional
     public Usuario crear(Usuario user) {
 
-        if (user.getEmpresa() != null && user.getEmpresa().getId() != null) {
-            Empresa emp = empresaServices.buscarPorId(user.getEmpresa().getId());
+        /*if (user.getEmpresa() != null && user.getEmpresa().getId() != null) {
+            Empresa emp = empresaServices.bu(user.getEmpresa().getId());
             user.setEmpresa(emp);
-        }
+        }*/
 
         services.crear(user);
         return user;
@@ -63,9 +63,9 @@ public class UsuarioResource {
         u.setPassword(data.getPassword());
         u.setRol(data.getRol());
 
-        if (data.getEmpresa() != null && data.getEmpresa().getId() != null) {
+        /*if (data.getEmpresa() != null && data.getEmpresa().getId() != null) {
             u.setEmpresa(empresaServices.buscarPorId(data.getEmpresa().getId()));
-        }
+        }*/
 
         return u;
     }

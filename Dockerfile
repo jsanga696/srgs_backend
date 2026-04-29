@@ -3,53 +3,64 @@ FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copiar archivos de configuración
 COPY pom.xml ./
 COPY .mvn .mvn
 COPY mvnw ./
 
-# Descargar dependencias (cache layer)
 RUN mvn dependency:go-offline -B
 
-# Copiar código fuente
 COPY src ./src
 
-# Compilar y empaquetar (excluyendo tests)
 RUN mvn package -DskipTests -Dquarkus.package.jar.type=uber-jar
 
 # ---- Stage 2: Runtime ----
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Instalar dependencias necesarias para Playwright
-RUN apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    harfbuzz \
+# Instalar dependencias necesarias para Playwright (sin chromium manual)
+RUN apt-get update && apt-get install -y \
+    wget \
     ca-certificates \
-    ttf-freefont \
-    && rm -rf /var/cache/apk/*
+    fonts-freefont-ttf \
+    libglib2.0-0 \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2t64 \
+    libpangocairo-1.0-0 \
+    libpango-1.0-0 \
+    libcairo2 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copiar el JAR desde la etapa de build
-COPY --from=build /app/target/*-runner.jar app.jar
+# 👇 IMPORTANTE: carpeta donde Playwright guarda browsers
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# Exponer puerto
+# Crear carpeta (permisos)
+RUN mkdir -p /ms-playwright
+
+# Copiar JAR
+COPY --from=build /app/target/*-runner.jar /app/app.jar
+
 EXPOSE 8080
 
-# Variables de entorno (se pueden sobrescribir en docker-compose)
-ENV QUARKUS_DATASOURCE_DB_KIND=postgresql
-ENV QUARKUS_DATASOURCE_USERNAME=postgres
-ENV QUARKUS_DATASOURCE_PASSWORD=postgres
-ENV QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://db:5432/db_srgs
-ENV QUARKUS_REDIS_HOSTS=redis://redis:6379
 ENV QUARKUS_HTTP_PORT=8080
-ENV SCRAPER_HEADLESS=true
 ENV APP_UPLOAD_DIR=/app/uploads
 
-# Crear directorio de uploads
 RUN mkdir -p /app/uploads
 
-# Comando de inicio
+# Usuario no root
+RUN useradd -m app
+RUN chown -R app:app /app /ms-playwright
+USER app
+
+# 👇 Aquí Playwright descargará Chromium automáticamente en runtime
 ENTRYPOINT ["java", "-jar", "app.jar"]
