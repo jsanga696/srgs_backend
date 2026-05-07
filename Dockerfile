@@ -11,6 +11,11 @@ RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
+ENV PLAYWRIGHT_BROWSERS_PATH=0
+
+# Instala SOLO Chromium
+RUN mvn exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install chromium"
+
 RUN mvn package -DskipTests -Dquarkus.package.jar.type=uber-jar
 
 # ---- Stage 2: Runtime ----
